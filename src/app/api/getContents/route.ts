@@ -26,3 +26,4 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Error reading directory' }, { status: 500 });
   }
 }
+export const runtime = 'edge';

@@ -127,3 +127,4 @@ export default function FolderPage({ params }: { params: { path: string[] } }) {
     </div>
   );
 }
+export const runtime = 'edge';
