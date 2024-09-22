@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Search, Github, File, Folder } from 'lucide-react';
+import { Search, Github, File, Folder, ArrowLeft } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -12,17 +12,18 @@ interface Content {
   path: string;
 }
 
-export default function Home() {
+export default function FolderPage({ params }: { params: { path: string[] } }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [contents, setContents] = useState<Content[]>([]);
+  const decodedPath = decodeURIComponent(params.path.join('/'));
 
   useEffect(() => {
     fetchContents();
-  }, []);
+  }, [decodedPath]);
 
   const fetchContents = async () => {
     try {
-      const response = await fetch('/api/getContents?path=');
+      const response = await fetch(`/api/getContents?path=${encodeURIComponent(decodedPath)}`);
       if (!response.ok) {
         throw new Error('Failed to fetch contents');
       }
@@ -57,12 +58,16 @@ export default function Home() {
       </header>
 
       <main className="flex-grow container mx-auto px-4 py-8">
+        <Link href="/" className="flex items-center text-blue-600 hover:underline mb-4">
+          <ArrowLeft className="mr-2" /> Back to Home
+        </Link>
+        <h2 className="text-2xl font-bold mb-4">Folder: {decodedPath}</h2>
         <div className="max-w-xl mx-auto mb-8">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <Input
               type="text"
-              placeholder="Search submissions"
+              placeholder="Search in this folder"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10 pr-4 py-2 w-full rounded-full border-2 border-black focus:border-gray-700 focus:ring focus:ring-gray-200 focus:ring-opacity-50"
